@@ -1,5 +1,37 @@
 # java-udfs-api
 
+> A Java implementation of the UDFS http api
+
+## Table of Contents
+
+- [Install](#install)
+- [Usage](#usage)
+- [Dependencies](#dependencies)
+
+## Install
+
+### Official releases
+
+You can use this project by including `ipfs.jar` from one of the [releases](https://github.com/UlordChain/java-udfs-api/releases).
+
+### Maven, Gradle, SBT
+
+Package managers are supported through [JitPack](https://jitpack.io/#UlordChain/java-udfs-api/) which supports Maven, Gradle, SBT, etc.
+
+for Maven, add the following sections to your pom.xml (replacing $LATEST_VERSION):
+
+<repositories>
+		<repository>
+		    <id>jitpack.io</id>
+		    <url>https://jitpack.io</url>
+		</repository>
+	</repositories>
+	<dependency>
+	    <groupId>com.github.UlordChain</groupId>
+	    <artifactId>java-udfs-api</artifactId>
+	    <version>Tag</version>
+	</dependency>
+
 ## Usage
 
 Create an UDFS instance with:
