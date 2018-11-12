@@ -19,7 +19,7 @@ You can use this project by including `ipfs.jar` from one of the [releases](http
 Package managers are supported through [JitPack](https://jitpack.io/#UlordChain/java-udfs-api/) which supports Maven, Gradle, SBT, etc.
 
 for Maven, add the following sections to your pom.xml (replacing $LATEST_VERSION):
-
+```
 <repositories>
 		<repository>
 		    <id>jitpack.io</id>
@@ -31,6 +31,7 @@ for Maven, add the following sections to your pom.xml (replacing $LATEST_VERSION
 	    <artifactId>java-udfs-api</artifactId>
 	    <version>Tag</version>
 	</dependency>
+```
 
 ## Usage
 
