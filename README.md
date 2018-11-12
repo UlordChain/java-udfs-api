@@ -26,7 +26,7 @@ MerkleNode addResult = udfs.push(file).get(0);
 
 To get a file use:
 ```Java
-Multihash filePointer = Multihash.fromBase58("QmPZ9gcCEpqKTo6aq61g2nXGUhM4iCL3ewB6LDXZCtioEB");
+Multihash filePointer = Multihash.fromBase58("hash值");
 byte[] fileContents = udfs.cat(filePointer);
 ```
 
