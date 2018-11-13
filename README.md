@@ -20,7 +20,7 @@ Package managers are supported through [JitPack](https://jitpack.io/#UlordChain/
 
 for Maven, add the following sections to your pom.xml (replacing $LATEST_VERSION):
 ```
-<repositories>
+	<repositories>
 		<repository>
 		    <id>jitpack.io</id>
 		    <url>https://jitpack.io</url>
