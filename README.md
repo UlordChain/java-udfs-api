@@ -29,7 +29,7 @@ for Maven, add the following sections to your pom.xml (replacing $LATEST_VERSION
 	<dependency>
 	    <groupId>com.github.UlordChain</groupId>
 	    <artifactId>java-udfs-api</artifactId>
-	    <version>Tag</version>
+	    <version>v1.1</version>
 	</dependency>
 ```
 
