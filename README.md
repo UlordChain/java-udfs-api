@@ -36,8 +36,11 @@ for Maven, add the following sections to your pom.xml (replacing $LATEST_VERSION
 ## Usage
 
 Create an UDFS instance with:
-```Java
-UDFS udfs = new UDFS("127.0.0.1",5001);
+```Java http
+UDFS udfs = new UDFS("127.0.0.1",5001,false);
+```
+```Java https
+UDFS udfs = new UDFS("127.0.0.1",5001,true);
 ```
 
 Then run commands like:
