@@ -16,9 +16,10 @@ import java.util.stream.*;
 import static org.junit.Assert.assertTrue;
 
 public class APITest {
-
-    //private final UDFS udfs = new UDFS(new MultiAddress("/dns4/udfs1.ulord.one/tcp/5001"));
-    private final UDFS udfs = new UDFS("192.168.12.221",5001);
+    //http访问方式
+    //private final UDFS udfs = new UDFS("######",5001,false);
+    //https访问方式
+    private final UDFS udfs = new UDFS("########",443,true);
     private final Random r = new Random(33550336); // perfect
 
     @Test
@@ -122,10 +123,12 @@ public class APITest {
     @Test
     public void pushFileTest() throws IOException {
         //要添加文件使用
-        NamedStreamable.FileWrapper file = new NamedStreamable.FileWrapper(new File("C:/Users/Allen/Desktop/UPaaS.png"));
+        NamedStreamable.FileWrapper file = new NamedStreamable.FileWrapper(new File("F:/test/20181116.txt"));
         //添加文件到IPFS返回HASH值
-        List<MerkleNode> addParts = udfs.push(file);
+        //List<MerkleNode> addParts = udfs.push(file);
         //输出HASH值
+
+        List<MerkleNode> addParts = udfs.add(file);
         System.out.println(addParts.get(0).hash);
     }
 

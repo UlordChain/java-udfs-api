@@ -41,8 +41,8 @@ public class UDFS {
     public final Name name = new Name();
     public final Pubsub pubsub = new Pubsub();
 
-    public UDFS(String host, int port) {
-        this(host, port, "/api/v0/", false);
+    public UDFS(String host, int port, boolean ssl) {
+        this(host, port, "/api/v0/", ssl);
     }
 
     public UDFS(String multiaddr) {
