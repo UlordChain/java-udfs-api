@@ -29,15 +29,18 @@ for Maven, add the following sections to your pom.xml (replacing $LATEST_VERSION
 	<dependency>
 	    <groupId>com.github.UlordChain</groupId>
 	    <artifactId>java-udfs-api</artifactId>
-	    <version>Tag</version>
+	    <version>v1.1</version>
 	</dependency>
 ```
 
 ## Usage
 
 Create an UDFS instance with:
-```Java
-UDFS udfs = new UDFS("127.0.0.1",5001);
+```Java http
+http: UDFS udfs = new UDFS("127.0.0.1",5001,false);
+```
+```Java https
+https: UDFS udfs = new UDFS("127.0.0.1",5001,true);
 ```
 
 Then run commands like:
