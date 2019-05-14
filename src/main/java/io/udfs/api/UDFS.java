@@ -225,9 +225,17 @@ public class UDFS {
         public List<Multihash> rm(Multihash hash) throws IOException {
             return rm(hash, true);
         }
+        public List<Multihash> rmlocal(Multihash hash) throws IOException {
+            return rmlocal(hash, true);
+        }
 
         public List<Multihash> rm(Multihash hash, boolean recursive) throws IOException {
             Map json = retrieveMap("pin/rm?stream-channels=true&r=" + recursive + "&arg=" + hash);
+            return ((List<Object>) json.get("Pins")).stream().map(x -> Cid.decode((String) x)).collect(Collectors.toList());
+        }
+
+        public List<Multihash> rmlocal(Multihash hash, boolean recursive) throws IOException {
+            Map json = retrieveMap("localrm?stream-channels=true&r=" + recursive + "&arg=" + hash);
             return ((List<Object>) json.get("Pins")).stream().map(x -> Cid.decode((String) x)).collect(Collectors.toList());
         }
 

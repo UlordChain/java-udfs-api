@@ -17,9 +17,9 @@ import static org.junit.Assert.assertTrue;
 
 public class APITest {
     //http访问方式
-    //private final UDFS udfs = new UDFS("132.232.99.150",5001,false);
+    private final UDFS udfs = new UDFS("132.232.99.150",5001,false);
     //https访问方式
-    private final UDFS udfs = new UDFS("114.67.37.76",443,false);
+    //private final UDFS udfs = new UDFS("114.67.37.76",443,false);
     private final Random r = new Random(33550336); // perfect
 
     @Test
@@ -123,13 +123,27 @@ public class APITest {
     @Test
     public void pushFileTest() throws IOException {
         //要添加文件使用
-        NamedStreamable.FileWrapper file = new NamedStreamable.FileWrapper(new File("F:/test/20181116.txt"));
+       /* NamedStreamable.FileWrapper file = new NamedStreamable.FileWrapper(new File("F:/test/20181116.txt"));
         //添加文件到IPFS返回HASH值
         List<MerkleNode> addParts = udfs.add(file);
-        //输出HASH值
+        System.out.println("内容为:"+addParts.get(0).toJSONString());*/
+       /* String hash="QmPQJ6CTMxxGintCKKeQ38gxE8P9nnUdq5nM8nifLT1aQh";
+        //Multihash hash=new Multihash("QmPQJ6CTMxxGintCKKeQ38gxE8P9nnUdq5nM8nifLT1aQh");
+        List<Multihash> pinRm=udfs.pin.rm(Multihash.fromBase58("QmPQJ6CTMxxGintCKKeQ38gxE8P9nnUdq5nM8nifLT1aQh"));
+        System.out.println("删除结果:"+pinRm.get(0).toString());*/
 
+        Multihash filePointer = Multihash.fromBase58("Qme7KYZZTkARzkwE4x3vLKC4zB1jtNdw5HwuCxqABE7Kgc");
+        byte[] fileContents = udfs.cat(filePointer);
+        String str=new String(fileContents);
+        System.out.println("查询的内容为："+str);
+        List<Multihash> pinRm=udfs.pin.rmlocal(filePointer);
+        System.out.println("删除结果:"+pinRm.get(0).toString());
+        //输出HASH值
         //List<MerkleNode> addParts = udfs.push(file);
-        System.out.println(addParts.get(0).hash);
+        /* System.out.println("哈希值:"+addParts.get(0).hash);
+        System.out.println("名称:"+addParts.get(0).name);
+        System.out.println("文件大小"+addParts.get(0).largeSize);
+        System.out.println("备份节点信息"+addParts.get(0).backup);*/
     }
 
     @Test
