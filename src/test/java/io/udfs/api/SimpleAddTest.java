@@ -28,7 +28,7 @@ public class SimpleAddTest {
         cids.put("html", "QmUQvDumYa8najL94EnGhmGobyMyNzAmCSpfAxYnYcQHZD");
     }
 
-    UDFS UDFS = new UDFS(new MultiAddress("/ip4/127.0.0.1/tcp/5001"));
+    UDFS UDFS = new UDFS(new MultiAddress("/ip4/111.231.218.88/tcp/5001"));
 
     @Test
     public void testSingle() throws Exception {

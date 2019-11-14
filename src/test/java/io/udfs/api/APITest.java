@@ -5,6 +5,8 @@ import io.ipfs.cid.*;
 import io.ipfs.multihash.Multihash;
 import io.ipfs.multiaddr.MultiAddress;
 import io.udfs.api.cbor.CborObject;
+//import one.ulord.upaas.ucwallet.client.UDFSClient;
+import io.udfs.api.util.UdfsDevTools;
 import org.junit.*;
 
 import java.io.*;
@@ -144,6 +146,21 @@ public class APITest {
         System.out.println("名称:"+addParts.get(0).name);
         System.out.println("文件大小"+addParts.get(0).largeSize);
         System.out.println("备份节点信息"+addParts.get(0).backup);*/
+    }
+
+    public void download(String filePathName,String hash) throws IOException {
+        Multihash filePointer = Multihash.fromBase58(hash);
+        byte[] data = udfs.cat(filePointer);
+        if(data != null){
+            File file  = new File(filePathName);
+            if(file.exists()){
+                file.delete();
+            }
+            FileOutputStream fos = new FileOutputStream(file);
+            fos.write(data,0,data.length);
+            fos.flush();
+            fos.close();
+        }
     }
 
     @Test
@@ -765,6 +782,13 @@ public class APITest {
         assertTrue(major >= 0 && minor >= 4);     // Requires at least 0.4.0
         Map commands = udfs.commands();
     }
+    /*@Test
+    public void testUdfs(){
+        UDFSClient client=new UDFSClient("/ip4/111.231.218.88/tcp/5001");
+        String result=client.publishResource("1.txt","hello world zhongguo".getBytes());
+        System.out.println(result);
+
+    }*/
 
     // this api is disabled until deployment over udfs is enabled
     public void updateTest() throws IOException {
