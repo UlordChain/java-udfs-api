@@ -35,18 +35,20 @@ for Maven, add the following sections to your pom.xml (replacing $LATEST_VERSION
 
 ## Usage
 
-Create an UDFS instance with:
-```testnet
+environment configuration:
+```
+testnet environment:
 url=http://test.api.udfs.one:15001
 ```
-```formal
+```
+formal environment:
 url=http://api.udfs.one:15001
 ```
 
 
 To add a file and bakeup other masternode use (the push method returns a list of merklenodes, in this case there is only one element):
 ```Java
-   			String filePath = "C:\\Users\\Allen\\Desktop\\certificate\\1.png";
+String filePath = "C:\\Users\\Allen\\Desktop\\certificate\\1.png";
         String url="http://test.api.udfs.one:15001/api/v0/add";
         String type="add";
         UdfsDevTools tools = new UdfsDevTools(1000, "", "", filePath, "");
@@ -57,7 +59,7 @@ To add a file and bakeup other masternode use (the push method returns a list of
 
 To push a byte[] use:
 ```Java
-  String filePath = "C:\\Users\\Allen\\Desktop\\certificate\\1.png";
+String filePath = "C:\\Users\\Allen\\Desktop\\certificate\\1.png";
         String url="http://test.api.udfs.one:15001/api/v0/push";
         String type="add";
         UdfsDevTools tools = new UdfsDevTools(1000, "", "", filePath, "");
