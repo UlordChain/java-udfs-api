@@ -10,7 +10,7 @@ public class NewApITest {
     public void uploadFile() throws Exception{
         //String url="http://test.api.udfs.one:15001/api/v0/add";
         String filePath = "C:\\Users\\Allen\\Desktop\\certificate\\1.png";
-        String url="http://api.udfs.one:15001/api/v0/add";
+        String url="http://test.api.udfs.one:15001/api/v0/push";
         String type="add";
         //String filePath="C:\\Users\\Allen\\Desktop\\certificate\\1.png";
         UdfsDevTools tools = new UdfsDevTools(1000, "", "", filePath, "");

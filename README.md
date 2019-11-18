@@ -36,49 +36,44 @@ for Maven, add the following sections to your pom.xml (replacing $LATEST_VERSION
 ## Usage
 
 Create an UDFS instance with:
-```Java http
-http: UDFS udfs = new UDFS("127.0.0.1",5001,false);
+```testnet
+url=http://test.api.udfs.one:15001
 ```
-```Java https
-https: UDFS udfs = new UDFS("127.0.0.1",5001,true);
+```formal
+url=http://api.udfs.one:15001
 ```
 
 
 To add a file and bakeup other masternode use (the push method returns a list of merklenodes, in this case there is only one element):
 ```Java
- //要添加文件使用
-    NamedStreamable.FileWrapper file = new NamedStreamable.FileWrapper(new File("F:/test/xxx.txt"));
-    //添加文件到UDFS返回HASH值
-    List<MerkleNode> addParts = udfs.add(file);
-    //输出HASH值
-    //List<MerkleNode> addParts = udfs.push(file); 如果存在master节点，需要做主动备份用这个方法
-    System.out.println(addParts.get(0).hash);
+   			String filePath = "C:\\Users\\Allen\\Desktop\\certificate\\1.png";
+        String url="http://test.api.udfs.one:15001/api/v0/add";
+        String type="add";
+        UdfsDevTools tools = new UdfsDevTools(1000, "", "", filePath, "");
+        File file = new File(filePath);
+        String Result = UdfsDevTools.FilePost(url, file,tools.getToken(type));
+        System.out.println("Result:"+Result);
 ```
 
 To push a byte[] use:
 ```Java
-Multihash filePointer = Multihash.fromBase58(hash);
-        byte[] data = udfs.cat(filePointer);
-        if(data != null){
-            File file  = new File(filePathName);   
-            if(file.exists()){   
-               file.delete();   
-            }   
-            FileOutputStream fos = new FileOutputStream(file);   
-            fos.write(data,0,data.length);   
-            fos.flush();   
-            fos.close();   
-          } 
+  String filePath = "C:\\Users\\Allen\\Desktop\\certificate\\1.png";
+        String url="http://test.api.udfs.one:15001/api/v0/push";
+        String type="add";
+        UdfsDevTools tools = new UdfsDevTools(1000, "", "", filePath, "");
+        File file = new File(filePath);
+        String Result = UdfsDevTools.FilePost(url, file,tools.getToken(type));
+        System.out.println("Result:"+Result);
 ```
 
 To get a file use:
 ```Java
-Multihash filePointer = Multihash.fromBase58("Qme7KYZZTkARzkwE4x3vLKC4zB1jtNdw5HwuCxqABE7Kgc");
-        byte[] fileContents = udfs.cat(filePointer);
-        String str=new String(fileContents);
-        System.out.println("查询的内容为："+str);
-        List<Multihash> pinRm=udfs.pin.rmlocal(filePointer);
-        System.out.println("删除结果:"+pinRm.get(0).toString());
+String hash="";
+        String url="http://test.api.udfs.one:15001/api/v0/cat/"+hash;
+        String type="get";
+        UdfsDevTools tools = new UdfsDevTools(100, "", "", "");
+        System.out.println(tools.getToken(type));
+        UdfsDevTools.download(url, "微信图片_20181113205946.jpg","F:\\分布式存储\\",tools.getToken(type));
 ```
 
 ## Dependencies
