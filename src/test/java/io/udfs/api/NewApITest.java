@@ -8,21 +8,22 @@ public class NewApITest {
 
     @Test
     public void uploadFile() throws Exception{
-        String url="http://test.api.udfs.one:15001/api/v0/add";
-        //String filePath = "C:\\Users\\qupc\\Desktop\\111.txt";
+        //String url="http://test.api.udfs.one:15001/api/v0/add";
+        String filePath = "C:\\Users\\Allen\\Desktop\\certificate\\1.png";
+        String url="http://api.udfs.one:15001/api/v0/add";
         String type="add";
-        String filePath="F:\\分布式存储\\UDFS上传文件素材\\微信图片_20181113205946.jpg";
-        UdfsDevTools tools = new UdfsDevTools(1000, "test", "testaccountb", filePath, "");
-        System.out.println(tools.getToken(type));
+        //String filePath="C:\\Users\\Allen\\Desktop\\certificate\\1.png";
+        UdfsDevTools tools = new UdfsDevTools(1000, "", "", filePath, "");
         File file = new File(filePath);
         String Result = UdfsDevTools.FilePost(url, file,tools.getToken(type));
+        System.out.println("Result:"+Result);
     }
     @Test
     public void downloadFile() throws Exception{
-        String hash="QmdQCd6hWaHwRT7fGJ4m7GTgWk3YdaEuotgP1McKKpQxWJ";
+        String hash="";
         String url="http://test.api.udfs.one:15001/api/v0/cat/"+hash;
         String type="get";
-        UdfsDevTools tools = new UdfsDevTools(1000, "test", "testaccountb", "");
+        UdfsDevTools tools = new UdfsDevTools(100, "", "", "");
         System.out.println(tools.getToken(type));
         UdfsDevTools.download(url, "微信图片_20181113205946.jpg","F:\\分布式存储\\",tools.getToken(type));
         //System.out.println("下载结果:"+Result);

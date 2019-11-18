@@ -1,5 +1,6 @@
 package io.udfs.api.util;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -53,6 +54,12 @@ public class UdfsDevTools {
         udfsCallbackUrl = udfscallbackurl;
     }
 
+    /**
+     * 根据不同类型获取用户token数据
+     * @param type
+     * @return
+     * @throws Exception
+     */
     public String getToken(String type) throws Exception {
         long expireTime = System.currentTimeMillis() / 1000L;
         expireTime += expireSec;
@@ -63,7 +70,7 @@ public class UdfsDevTools {
             InputStream fis = new FileInputStream(f);
             int fileSize = fis.available();
             fis.close();
-            String md5 = getMD5Three(filePath);
+            String md5= DigestUtils.md5Hex(new FileInputStream(filePath));
             if (StringUtils.isEmpty(udfsCallbackUrl))
                 json = "{\"ver\":0,\"expired\":" + expireTime + ",\"callback_url\":\"\",\"callback_body\":\"\",\"ext\":{\"file_name\":\"" + fileName + "\",\"size\":" + fileSize + ",\"md5\":\"" + md5 + "\"}}";
             else
@@ -87,29 +94,6 @@ public class UdfsDevTools {
         String token = uosAccount + ":" + encodeSign + ":" + encodedPolicy;
         return token;
     }
-
-    public static String getMD5Three(String path) {
-        BigInteger bi = null;
-        try {
-            byte[] buffer = new byte[8192];
-            int len = 0;
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            File f = new File(path);
-            FileInputStream fis = new FileInputStream(f);
-            while ((len = fis.read(buffer)) != -1) {
-                md.update(buffer, 0, len);
-            }
-            fis.close();
-            byte[] b = md.digest();
-            bi = new BigInteger(1, b);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return bi.toString(16);
-    }
-
     /**
      * 上传文件
      * @param url
@@ -138,7 +122,6 @@ public class UdfsDevTools {
         System.out.println("发送消息收到的返回：" + buffer.toString());
         return buffer.toString();
     }
-
     /**
      * 下载文件
      * @param urlString
@@ -196,13 +179,5 @@ public class UdfsDevTools {
         }
         bos.close();
         return bos.toByteArray();
-    }
-    public static void main(String[] args) throws Exception {
-
-        //UdfsDevTools tools = new UdfsDevTools(1000, "test", "testaccountb", "C:\\Users\\qupc\\Desktop\\ips.txt", "");
-        //UdfsDevTools tools = new UdfsDevTools(1000, "test", "testaccountb", "C:\\Users\\Allen\\Desktop\\20191102-new.txt", "");
-        //C:\Users\Allen\Desktop\20191102-new.txt
-        //String token = tools.getToken();
-        //System.out.println(token);
     }
 }
