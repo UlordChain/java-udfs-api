@@ -125,11 +125,11 @@ public class APITest {
     @Test
     public void pushFileTest() throws IOException {
         //要添加文件使用
-       /* NamedStreamable.FileWrapper file = new NamedStreamable.FileWrapper(new File("F:/test/20181116.txt"));
+     /*   NamedStreamable.FileWrapper file = new NamedStreamable.FileWrapper(new File("F:/test/20181116.txt"));
         //添加文件到IPFS返回HASH值
         List<MerkleNode> addParts = udfs.add(file);
-        System.out.println("内容为:"+addParts.get(0).toJSONString());*/
-       /* String hash="QmPQJ6CTMxxGintCKKeQ38gxE8P9nnUdq5nM8nifLT1aQh";
+        System.out.println("内容为:"+addParts.get(0).toJSONString());
+        String hash="QmPQJ6CTMxxGintCKKeQ38gxE8P9nnUdq5nM8nifLT1aQh";
         //Multihash hash=new Multihash("QmPQJ6CTMxxGintCKKeQ38gxE8P9nnUdq5nM8nifLT1aQh");
         List<Multihash> pinRm=udfs.pin.rm(Multihash.fromBase58("QmPQJ6CTMxxGintCKKeQ38gxE8P9nnUdq5nM8nifLT1aQh"));
         System.out.println("删除结果:"+pinRm.get(0).toString());*/

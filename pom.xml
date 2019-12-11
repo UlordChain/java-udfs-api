@@ -54,12 +54,17 @@
 			<version>2.4</version>
 			<classifier>jdk15</classifier>
 		</dependency>
-		<dependency>
+	<!--<dependency>
 			<groupId>io.udfs.api</groupId>
 			<artifactId>ulord-java-sdk</artifactId>
 			<version>0.0.1</version>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/ulord-java-sdk-1.0.0.jar</systemPath>
+		</dependency>-->
+		<dependency>
+			<groupId>com.github.qiniu</groupId>
+			<artifactId>java-sdk</artifactId>
+			<version>v7.2.27</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>

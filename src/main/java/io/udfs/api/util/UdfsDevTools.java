@@ -6,11 +6,11 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.*;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -23,6 +23,7 @@ import sun.swing.StringUIClientPropertyKey;
 import java.io.*;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
@@ -61,38 +62,42 @@ public class UdfsDevTools {
      * @throws Exception
      */
     public String getToken(String type) throws Exception {
-        long expireTime = System.currentTimeMillis() / 1000L;
-        expireTime += expireSec;
-        String json = "";
-        if(type.equals("add")){
-            File f = new File(filePath);
-            String fileName = f.getName();
-            InputStream fis = new FileInputStream(f);
-            int fileSize = fis.available();
-            fis.close();
-            String md5= DigestUtils.md5Hex(new FileInputStream(filePath));
-            if (StringUtils.isEmpty(udfsCallbackUrl))
-                json = "{\"ver\":0,\"expired\":" + expireTime + ",\"callback_url\":\"\",\"callback_body\":\"\",\"ext\":{\"file_name\":\"" + fileName + "\",\"size\":" + fileSize + ",\"md5\":\"" + md5 + "\"}}";
-            else
-                json = "{\"ver\":0,\"expired\":" + expireTime + ",\"callback_url\":\"" + udfsCallbackUrl + "\",\"callback_body\":\"{\\\"file_size\\\":\\\"$(size)\\\",\\\"hash\\\":\\\"$(hash)\\\",\\\"file_id\\\":0}\",\"ext\":{\"file_name\":\"" + fileName + "\",\"size\":" + fileSize + ",\"md5\":\"" + md5 + "\"}}";
+        if(expireSec==0L||StringUtils.isEmpty(secretKey)||StringUtils.isEmpty(uosAccount)){
+            return null;
+        }else {
+            long expireTime = System.currentTimeMillis() / 1000L;
+            expireTime += expireSec;
+            String json = "";
+            if(type.equals("add")){
+                File f = new File(filePath);
+                String fileName = f.getName();
+                InputStream fis = new FileInputStream(f);
+                int fileSize = fis.available();
+                fis.close();
+                String md5= DigestUtils.md5Hex(new FileInputStream(filePath));
+                if (StringUtils.isEmpty(udfsCallbackUrl))
+                    json = "{\"ver\":0,\"expired\":" + expireTime + ",\"callback_url\":\"\",\"callback_body\":\"\",\"ext\":{\"file_name\":\"" + fileName + "\",\"size\":" + fileSize + ",\"md5\":\"" + md5 + "\"}}";
+                else
+                    json = "{\"ver\":0,\"expired\":" + expireTime + ",\"callback_url\":\"" + udfsCallbackUrl + "\",\"callback_body\":\"{\\\"file_size\\\":\\\"$(size)\\\",\\\"hash\\\":\\\"$(hash)\\\",\\\"file_id\\\":0}\",\"ext\":{\"file_name\":\"" + fileName + "\",\"size\":" + fileSize + ",\"md5\":\"" + md5 + "\"}}";
 
-        }else if (type.equals("get")){
+            }else if (type.equals("get")){
                 json = "{\"ver\":0,\"expired\": "+expireTime+",\"ext\":{}}";
+            }
+            byte[] textByte;
+            String encodedPolicy;
+            byte[] sign;
+            Base64.Encoder encoder = Base64.getEncoder();
+            try {
+                textByte = json.getBytes("UTF-8");
+                encodedPolicy = UrlSafeBase64.encodeToString(textByte);
+                sign = HMAC_SHA1.genHMAC(encodedPolicy, secretKey);
+            } catch (Exception ex) {
+                throw new Exception("构建下载链接出错" + ex.toString());
+            }
+            String encodeSign = UrlSafeBase64.encodeToString(sign);
+            String token = uosAccount + ":" + encodeSign + ":" + encodedPolicy;
+            return token;
         }
-        byte[] textByte;
-        String encodedPolicy;
-        byte[] sign;
-        Base64.Encoder encoder = Base64.getEncoder();
-        try {
-            textByte = json.getBytes("UTF-8");
-            encodedPolicy = UrlSafeBase64.encodeToString(textByte);
-            sign = HMAC_SHA1.genHMAC(encodedPolicy, secretKey);
-        } catch (Exception ex) {
-            throw new Exception("构建下载链接出错" + ex.toString());
-        }
-        String encodeSign = UrlSafeBase64.encodeToString(sign);
-        String token = uosAccount + ":" + encodeSign + ":" + encodedPolicy;
-        return token;
     }
     /**
      * 上传文件
@@ -103,25 +108,94 @@ public class UdfsDevTools {
      * @throws Exception
      */
     public static String FilePost(String url,File value,String token) throws Exception {
-        String BOUNDARY = java.util.UUID.randomUUID().toString();
-        MultipartEntity multipartEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE, "--------------------" + BOUNDARY, Charset.defaultCharset());
-        multipartEntity.addPart("binary", new FileBody(value));
-        url+="?token="+token;
-        HttpPost request = new HttpPost(url);
-        request.setEntity(multipartEntity);
-        request.addHeader("Content-Type", "multipart/form-data; boundary=--------------------" + BOUNDARY);
-        HttpClient client = HttpClients.custom().setRedirectStrategy(new LaxRedirectStrategy()).build();
-        HttpResponse response = client.execute(request);
-        InputStream is = response.getEntity().getContent();
-        BufferedReader in = new BufferedReader(new InputStreamReader(is));
-        StringBuffer buffer = new StringBuffer();
-        String line = "";
-        while ((line = in.readLine()) != null) {
-            buffer.append(line);
+        if(StringUtils.isEmpty(url)||StringUtils.isEmpty(value.getPath())||StringUtils.isEmpty(token)){
+            return null;
+        }else {
+            String BOUNDARY = java.util.UUID.randomUUID().toString();
+            MultipartEntity multipartEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE, "--------------------" + BOUNDARY, Charset.defaultCharset());
+            multipartEntity.addPart("binary", new FileBody(value));
+            url+="?token="+token;
+            HttpPost request = new HttpPost(url);
+            request.setEntity(multipartEntity);
+            request.addHeader("Content-Type", "multipart/form-data; boundary=--------------------" + BOUNDARY);
+            HttpClient client = HttpClients.custom()
+                    .addInterceptorFirst(new ContentLengthHeaderRemover()).setRedirectStrategy(new LaxRedirectStrategy())
+                    .build();
+            //HttpClient client = HttpClients.custom().setRedirectStrategy(new LaxRedirectStrategy()).build();
+            HttpResponse response = client.execute(request);
+            InputStream is = response.getEntity().getContent();
+            BufferedReader in = new BufferedReader(new InputStreamReader(is));
+            StringBuffer buffer = new StringBuffer();
+            String line = "";
+            while ((line = in.readLine()) != null) {
+                buffer.append(line);
+            }
+            //System.out.println("发送消息收到的返回：" + buffer.toString());
+            return buffer.toString();
         }
-        System.out.println("发送消息收到的返回：" + buffer.toString());
-        return buffer.toString();
     }
+
+    /**
+     * 删除文件
+     * @param url
+     * @param token
+     * @return
+     * @throws Exception
+     */
+    public static int DelFile(String url,String token) throws Exception {
+        if(StringUtils.isEmpty(url)||StringUtils.isEmpty(token)){
+            return -1;
+        }else {
+            CloseableHttpClient httpclient = HttpClients.custom()
+                    .addInterceptorFirst(new ContentLengthHeaderRemover()).setRedirectStrategy(new LaxRedirectStrategy())
+                    .build();
+            MultipartEntityBuilder entitybuilder = MultipartEntityBuilder.create();
+            entitybuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+            HttpEntity mutiPartHttpEntity = entitybuilder.build();
+            RequestBuilder reqbuilder = RequestBuilder.post(url+"?token="+token);
+            System.out.println("url:"+url+"?token="+token);
+            reqbuilder.setEntity(mutiPartHttpEntity);
+            HttpUriRequest multipartRequest = reqbuilder.build();
+            HttpResponse httpresponse = httpclient.execute(multipartRequest);
+            System.out.println(EntityUtils.toString(httpresponse.getEntity()));
+            return httpresponse.getStatusLine().getStatusCode();
+        }
+    }
+
+
+    public static String FileUpload(String url,String filePath,String token) throws Exception {
+        if (StringUtils.isEmpty(url) || StringUtils.isEmpty(filePath) || StringUtils.isEmpty(token)) {
+            return null;
+        } else {
+            InputStream is = new URL(filePath).openStream();
+            url += "?token=" + token;
+            //创建HttpClient
+            CloseableHttpClient httpClient = HttpClients.createDefault();
+            HttpPost httpPost = new HttpPost(url);
+            MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+            /*绑定文件参数，传入文件流和contenttype，此处也可以继续添加其他formdata参数*/
+            //builder.addBinaryBody("file",is, ContentType.MULTIPART_FORM_DATA,fileName);
+            HttpEntity entity = builder.build();
+            httpPost.setEntity(entity);
+            //执行提交
+            HttpResponse response = httpClient.execute(httpPost);
+            HttpEntity responseEntity = response.getEntity();
+            if (responseEntity != null) {
+                //将响应的内容转换成字符串
+                String result = EntityUtils.toString(responseEntity, Charset.forName("UTF-8"));
+                return result;
+
+                //此处根据服务器返回的参数转换，这里返回的是JSON格式
+              /*  JSONObject output = JSON.parseObject(result);
+                JSONArray body = output.getJSONArray("body");
+                String resUrl = body.get(0)+"";
+                System.out.println(resUrl);*/
+            }
+            return null;
+        }
+    }
+
+
     /**
      * 下载文件
      * @param urlString
@@ -130,37 +204,41 @@ public class UdfsDevTools {
      * @param token
      * @throws Exception
      */
-    public static void download(String urlString, String filename,String savePath,String token) throws Exception {
+    public static String download(String urlString, String filename,String savePath,String token) throws Exception {
+        if(StringUtils.isEmpty(urlString)||StringUtils.isEmpty(filename)||StringUtils.isEmpty(token)){
+            return "error";
 
-        urlString+="?token="+token;
-        // 构造URL
-        System.out.println(urlString);
-        URL url = new URL(urlString);
-        // 打开连接
-        URLConnection con = url.openConnection();
-        con.setRequestProperty("Content-Type", "application/json");
-        //设置请求超时为5s
-        con.setConnectTimeout(5*1000);
-        // 输入流
-        InputStream is = con.getInputStream();
-
-        // 1K的数据缓冲
-        byte[] bs = new byte[4096];
-        // 读取到的数据长度
-        int len;
-        // 输出的文件流
-        File sf=new File(savePath);
-        if(!sf.exists()){
-            sf.mkdirs();
+        }else {
+            urlString+="?token="+token;
+            // 构造URL
+            //System.out.println(urlString);
+            URL url = new URL(urlString);
+            // 打开连接
+            URLConnection con = url.openConnection();
+            con.setRequestProperty("Content-Type", "application/json");
+            //设置请求超时为5s
+            con.setConnectTimeout(5*1000);
+            // 输入流
+            InputStream is = con.getInputStream();
+            // 1K的数据缓冲
+            byte[] bs = new byte[4096];
+            // 读取到的数据长度
+            int len;
+            // 输出的文件流
+            File sf=new File(savePath);
+            if(!sf.exists()){
+                sf.mkdirs();
+            }
+            OutputStream os = new FileOutputStream(sf.getPath()+"\\"+filename);
+            // 开始读取
+            while ((len = is.read(bs)) != -1) {
+                os.write(bs, 0, len);
+            }
+            // 完毕，关闭所有链接
+            os.close();
+            is.close();
+            return "success";
         }
-        OutputStream os = new FileOutputStream(sf.getPath()+"\\"+filename);
-        // 开始读取
-        while ((len = is.read(bs)) != -1) {
-            os.write(bs, 0, len);
-        }
-        // 完毕，关闭所有链接
-        os.close();
-        is.close();
     }
 
     /**
@@ -179,5 +257,29 @@ public class UdfsDevTools {
         }
         bos.close();
         return bos.toByteArray();
+    }
+
+    public static byte[] downlLoadBytes(String urlString, String filename,String savePath,String token) throws Exception {
+        if(StringUtils.isEmpty(urlString)||StringUtils.isEmpty(filename)||StringUtils.isEmpty(token)){
+            return null;
+
+        }else {
+            urlString+="?token="+token;
+            // 构造URL
+            System.out.println(urlString);
+            URL url = new URL(urlString);
+            // 打开连接
+            URLConnection con = url.openConnection();
+            con.setRequestProperty("Content-Type", "application/json");
+            //设置请求超时为5s
+            con.setConnectTimeout(5*1000);
+            // 输入流
+            InputStream is = con.getInputStream();
+            return readInputStream(is);
+        }
+    }
+
+    public static void main(String[] args) {
+
     }
 }
