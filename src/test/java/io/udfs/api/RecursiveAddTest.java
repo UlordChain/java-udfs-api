@@ -16,7 +16,7 @@ public class RecursiveAddTest {
     
     @Test
     public void testAdd() throws Exception {
-        System.out.println("UDFS version: " + UDFS.version());
+//        System.out.println("UDFS version: " + UDFS.version());
 
         String EXPECTED = "QmX5fZ6aUxNTAS7ZfYc8f4wPoMx6LctuNbMjuJZ9EmUSr6";
 
@@ -50,6 +50,7 @@ public class RecursiveAddTest {
         Assert.assertEquals(EXPECTED, node.hash.toBase58());
     }
 
+
     @Test
     public void largeBinaryRecursiveAdd() throws Exception {
         String EXPECTED = "QmZdfdj7nfxE68fBPUWAGrffGL3sYGx1MDEozMg73uD2wj";
@@ -78,7 +79,7 @@ public class RecursiveAddTest {
         base.toFile().mkdirs();
         Path bindir = base.resolve("moredata");
         bindir.toFile().mkdirs();
-        byte[] bindata = new byte[100 * 1024*1024];
+        byte[] bindata = new byte[100 * 1024 *1024];
         new Random(28).nextBytes(bindata);
         Files.write(bindir.resolve("data.bin"), bindata);
         new Random(496).nextBytes(bindata);
