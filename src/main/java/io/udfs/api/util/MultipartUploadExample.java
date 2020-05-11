@@ -119,9 +119,10 @@ public class MultipartUploadExample {
     }
 
     public static int uploadFile() throws Exception {
-        String url="http://test.api.udfs.one:15001/api/v0/add";
+        String url="http://api.udfs.one:15001/api/v0/add";
         String filePath = "F:\\分布式存储\\宣传片\\Ulord链云生态宣传片中英文字幕200M.mp4";
-        UdfsDevTools tools = new UdfsDevTools(1000000, "test", "testaccountb",filePath, "");
+        //UdfsDevTools tools = new UdfsDevTools(1000000, "test", "testaccountb",filePath, "","");
+        UdfsDevTools tools = new UdfsDevTools(1000000, "76E18tAYEU2WPLww2DwPvM6", "udisk",filePath, "","");
         HttpURLConnection connection =
                 (HttpURLConnection) (new URL(url+"?token=" + tools.getToken("add").toString())).openConnection();
         connection.setDoOutput(true);

@@ -4,7 +4,7 @@
 
     <groupId>com.github.udfs</groupId>
     <artifactId>java-udfs-api</artifactId>
-	<version>v1.3.2</version>
+	<version>v1.3.3</version>
 	<packaging>jar</packaging>
 
 	<name>java-udfs-api</name>
@@ -54,13 +54,34 @@
 			<version>2.4</version>
 			<classifier>jdk15</classifier>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>3.17</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>3.17</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+		</dependency>
 	<!--<dependency>
 			<groupId>io.udfs.api</groupId>
 			<artifactId>ulord-java-sdk</artifactId>
 			<version>0.0.1</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/ulord-java-sdk-1.0.0.jar</systemPath>
-		</dependency>-->
+			<systemPath>${project.basedir}/lib/java-udfs-api-v1.3.4.jar</systemPath>
+	</dependency>-->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${version.junit}</version>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>com.github.qiniu</groupId>
 			<artifactId>java-sdk</artifactId>
@@ -69,12 +90,17 @@
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
-			<version>4.5.3</version>
+			<version>4.5.10</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpmime</artifactId>
-			<version>4.3</version>
+			<version>4.5.10</version>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.47</version>
 		</dependency>
 	</dependencies>
 	<build>
@@ -92,19 +118,22 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.19.1</version>
-			</plugin>
-			<!--<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.0.2</version>
 				<configuration>
-					<archive>
-						<manifest>
-							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-						</manifest>
-					</archive>
+					<skipTests>true</skipTests>
 				</configuration>
-			</plugin>-->
+			</plugin>
+			<!--<plugin>-->
+				<!--<groupId>org.apache.maven.plugins</groupId>-->
+				<!--<artifactId>maven-jar-plugin</artifactId>-->
+				<!--<version>3.0.2</version>-->
+				<!--<configuration>-->
+					<!--<archive>-->
+						<!--<manifest>-->
+							<!--<addDefaultImplementationEntries>true</addDefaultImplementationEntries>-->
+						<!--</manifest>-->
+					<!--</archive>-->
+				<!--</configuration>-->
+			<!--</plugin>-->
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
