@@ -4,7 +4,7 @@
 
     <groupId>com.github.udfs</groupId>
     <artifactId>java-udfs-api</artifactId>
-	<version>v1.2.2</version>
+	<version>v1.3.2</version>
 	<packaging>jar</packaging>
 
 	<name>java-udfs-api</name>
@@ -54,9 +54,29 @@
 			<version>2.4</version>
 			<classifier>jdk15</classifier>
 		</dependency>
-
+	<!--<dependency>
+			<groupId>io.udfs.api</groupId>
+			<artifactId>ulord-java-sdk</artifactId>
+			<version>0.0.1</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/ulord-java-sdk-1.0.0.jar</systemPath>
+		</dependency>-->
+		<dependency>
+			<groupId>com.github.qiniu</groupId>
+			<artifactId>java-sdk</artifactId>
+			<version>v7.2.27</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.5.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpmime</artifactId>
+			<version>4.3</version>
+		</dependency>
 	</dependencies>
-
 	<build>
 		<plugins>
 			<plugin>
@@ -73,7 +93,7 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.19.1</version>
 			</plugin>
-			<plugin>
+			<!--<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>3.0.2</version>
@@ -83,6 +103,19 @@
 							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
 						</manifest>
 					</archive>
+				</configuration>
+			</plugin>-->
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass></mainClass>
+						</manifest>
+					</archive>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
 				</configuration>
 			</plugin>
 		</plugins>
