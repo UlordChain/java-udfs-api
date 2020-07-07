@@ -40,24 +40,25 @@ public class UDFS {
     public final Stats stats = new Stats();
     public final Name name = new Name();
     public final Pubsub pubsub = new Pubsub();
+    public String token="";
 
-    public UDFS(String host, int port) {
-        this(host, port, "/api/v0/", false);
+    public UDFS(String host, int port, boolean ssl,String token) {
+        this(host, port, "/api/v0/", ssl,token);
     }
 
-    public UDFS(String multiaddr) {
-        this(new MultiAddress(multiaddr));
+    public UDFS(String multiaddr,String token) {
+        this(new MultiAddress(multiaddr),token);
     }
 
-    public UDFS(MultiAddress addr) {
-        this(addr.getHost(), addr.getTCPPort(), "/api/v0/", detectSSL(addr));
+    public UDFS(MultiAddress addr,String token) {
+        this(addr.getHost(), addr.getTCPPort(), "/api/v0/", detectSSL(addr),token);
     }
 
-    public UDFS(String host, int port, String version, boolean ssl) {
+    public UDFS(String host, int port, String version, boolean ssl,String token) {
         this.host = host;
         this.port = port;
-
-        if(ssl) {
+        this.token = token;
+        if (ssl) {
             this.protocol = "https";
         } else {
             this.protocol = "http";
@@ -87,7 +88,7 @@ public class UDFS {
     }
 
     public List<MerkleNode> add(List<NamedStreamable> files, boolean wrap, boolean hashOnly) throws IOException {
-        Multipart m = new Multipart(protocol + "://" + host + ":" + port + version + "add?stream-channels=true&w="+wrap + "&n="+hashOnly, "UTF-8");
+        Multipart m = new Multipart(protocol + "://" + host + ":" + port + version + "add?token="+token+"&stream-channels=true&w="+wrap + "&n="+hashOnly, "UTF-8");
         for (NamedStreamable file: files) {
             if (file.isDirectory()) {
                 m.addSubtree(Paths.get(""), file);
@@ -225,9 +226,17 @@ public class UDFS {
         public List<Multihash> rm(Multihash hash) throws IOException {
             return rm(hash, true);
         }
+        public List<Multihash> rmlocal(Multihash hash) throws IOException {
+            return rmlocal(hash, true);
+        }
 
         public List<Multihash> rm(Multihash hash, boolean recursive) throws IOException {
             Map json = retrieveMap("pin/rm?stream-channels=true&r=" + recursive + "&arg=" + hash);
+            return ((List<Object>) json.get("Pins")).stream().map(x -> Cid.decode((String) x)).collect(Collectors.toList());
+        }
+
+        public List<Multihash> rmlocal(Multihash hash, boolean recursive) throws IOException {
+            Map json = retrieveMap("localrm?stream-channels=true&r=" + recursive + "&arg=" + hash);
             return ((List<Object>) json.get("Pins")).stream().map(x -> Cid.decode((String) x)).collect(Collectors.toList());
         }
 

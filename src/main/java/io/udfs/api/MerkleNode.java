@@ -19,8 +19,8 @@ public class MerkleNode {
     public final List<MerkleNode> links;
     public final Optional<byte[]> data;
     public final List<String> backup;
-    public static String backdirhash="";
-    public static String backfilehash="";
+    //public static String backdirhash="";
+    //public static String backfilehash="";
 
     public MerkleNode(String hash,
                       Optional<String> name,
@@ -72,16 +72,16 @@ public class MerkleNode {
             hash = (String)json.get("Key");
         if (hash == null && json.containsKey("Cid"))
             hash = (String) (((Map) json.get("Cid")).get("/"));
-        if(null!=hash){
+       /* if(null!=hash){
             backdirhash=hash;
-        }
+        }*/
         Optional<String> name = json.containsKey("Name") ?
                 Optional.of((String) json.get("Name")):
                 Optional.empty();
         String fileName=(String) json.get("Name");
-        if(StringUtils.isNotEmpty(fileName)){
+       /* if(StringUtils.isNotEmpty(fileName)){
             backfilehash=hash;
-        }
+        }*/
         Object rawSize = json.get("Size");
         Optional<Integer> size = rawSize instanceof Integer ?
                 Optional.of((Integer) rawSize) :
@@ -102,8 +102,8 @@ public class MerkleNode {
         if(null!=job&&job.size()!=0){
             JSONArray list = job.getJSONArray("Success");
             if(null!=list){
-                hash=backdirhash;//备份信息将存放的节点的hash做为hash值
-                name=Optional.of(backfilehash);//备份信息将文件的hash值作为name值
+                //hash=backdirhash;//备份信息将存放的节点的hash做为hash值
+                //name=Optional.of(backfilehash);//备份信息将文件的hash值作为name值
                 Iterator<Object> it = list.iterator();
                 while (it.hasNext()) {
                     JSONObject ob = (JSONObject) it.next();
