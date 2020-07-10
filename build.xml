@@ -45,7 +45,7 @@
     </jar>
   </target>
 
-  <target name="test" depends="compile,dist">
+  <!--<target name="test" depends="compile,dist">
     <junit printsummary="yes" fork="true" haltonfailure="yes">
       <jvmarg value="-Xmx1g"/>
       <classpath>
@@ -60,7 +60,7 @@
 	<formatter type="xml"/>
       </test>
     </junit>
-  </target>
+  </target>-->
 
   <target name="clean" description="clean up">
     <delete dir="${build}"/>
